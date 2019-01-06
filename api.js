@@ -1,19 +1,29 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const router = express.Router();
-const db = require('./db/todos');
+const Todo = require('./db/models/todo');
 
 router.use(bodyParser.json());
 
-router.use(express.cors());
+router.use(cors());
 
 router
   .route('/todos')
   .get((req, res) => {
-    res.send({
-      todos: db.getAll(),
-      success: true
+    console.log(Todo);
+    Todo.find({})
+    .then(result => {
+      res.send({
+        todos: result,
+        success: true
+      });
+    })
+    .catch(err => {
+      if(err) {
+        throw err;
+      }
     });
   })
   .post((req, res) => {
@@ -23,38 +33,74 @@ router
         message: "Task is required"
       });
     } else {
-      const todo = db.createTodo(req.body.task);
-      res.send({
-        todo,
-        success: true,
-        message: "Successfully Created"
-      });
+      const todo = new Todo({task : req.body.task});
+      todo.save()
+      .then(result => {
+        res.send({
+          todo: result,
+          success: true,
+          message: "Successfully Created"
+        });
+      })
+      .catch(err => {
+        if(err)
+          throw err;
+      })
     }
   });
 
 router
   .route('/todos/:id')
   .get((req, res)=>{
-    const todo = db.getOneTodo(req.params.id);
-    res.send({
-      success: true,
-      todo
-    });
+    Todo.findById(req.params.id)
+    .then(result => {
+      res.send({
+        success: true,
+        todo: result
+      });
+    })
+    .catch(err => {
+      if(err)
+        throw err;
+    })
   })
   .put((req, res) => {
-    const todo = db.editTodo(req.params.id, req.body.task);
-    res.send({
-      success: true,
-      todo,
-      message: "Successfully Update"
-    });
+    // error checks
+    if(!req.body.task) {
+      res.send({
+        success: false,
+        message: "Task is required"
+      });
+    } else {
+      Todo.findByIdAndUpdate(req.params.id, {task: req.body.task})
+      .then(result => {
+        res.send({
+          success: true,
+          todo: result,
+          message: "Successfully Update"
+        });
+      })
+      .catch(err => {
+        if(err){
+          throw err;
+        }
+      })
+    }
   })
   .delete((req, res) => {
-    db.deleteTodo(req.params.id);
-    res.send({
-      success: true,
-      message: "Successfully Deleted"
-    });
+    Todo.findByIdAndRemove(req.params.id)
+    .then(() => {
+      res.send({
+        success: true,
+        message: "Successfully Deleted"
+      });  
+    })
+    .catch(err => {
+      if(err) {
+        throw err;
+      }
+    })
+    
   });
 
 module.exports = router;
