@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include ./partials/head.ejs %>
+</head>
+<body>
+    <header class="container-fluid">
+        <% include ./partials/header.ejs %>
+    </header>
+
+    <main class="container">
+        <h1>
+            Task: <%= todo.task %>
+        </h1>
+        <a class="btn btn-primary" href="/edit/<%= todo.id %>"> Edit </a>
+
+        <form action="/deletetodo/<%= todo.id %>?_method=DELETE" method="POST">
+            <button class="btn btn-primary" type="submit"> Delete </button>
+        </form>
+
+    </main>
+
+    <footer class="container-fluid">
+        <% include ./partials/footer.ejs %>
+    </footer>
+</body>
+</html>

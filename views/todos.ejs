@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <% include ./partials/head.ejs %>
+<body>
+
+    <% include ./partials/header.ejs %>
+
+    <main class="container">
+        <h1>Todos</h1>
+        <% todos.forEach(function(todo) { -%>
+            <div class="jumbotron">
+              <h1>
+                    Task:
+                    <a href="/single/<%= todo.id %>">
+                        <%= todo.task %>
+                    </a>
+              </h1>
+            </div>
+        <% }) -%>
+    </main>
+
+    <% include ./partials/footer.ejs %>
+    
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include ./partials/head.ejs %>
+</head>
+<body>
+    <header class="container-fluid">
+        <% include ./partials/header.ejs %>
+    </header>
+
+    <main class="container">
+        <h1>Create Todo</h1>
+        <form name="createTodoFrom" action="/createtodo" method="POST">
+            <div class="form-group">
+                <label for="task">Task</label>
+                <input type="hidden" name="_csrf" value="<%= _csrf %>">
+                <input type="text" class="form-control" name="task" id="task" aria-describedby="Task" placeholder="Todo Task" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <% if (messages) { -%>
+            <% for(let i = 0; i < messages.length; i++) { -%>
+                <div class="alert alert-danger mt-3" role="alert">
+                  <%= messages[i] %>
+                </div>
+            <% } -%>
+        <% } -%>
+    </main>
+
+    <footer class="container-fluid">
+        <% include ./partials/footer.ejs %>
+    </footer>
+</body>
+</html>
